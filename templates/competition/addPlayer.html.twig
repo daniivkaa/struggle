@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add Player{% endblock %}
+
+{% block body %}
+    {{ form_start(addForm) }}
+    {{ form_widget(addForm) }}
+    <button type="submit" class="btn btn-primary">Отправить</button>
+    {{ form_end(addForm) }}
+{% endblock %}

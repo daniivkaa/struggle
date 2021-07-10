@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Show Competition{% endblock %}
+
+{% block body %}
+    <h1>Код соревнования: {{ competition.code }}</h1>
+    {% for gameForm in gameForms %}
+        <h1>Закончите игру</h1>
+        {{ form_start(gameForm) }}
+            {{ form_widget(gameForm) }}
+            {{ form_rest(gameForm) }}
+        {{ form_end(gameForm) }}
+    {% endfor %}
+    <h1>Создайте игру</h1>
+    {{ form_start(addGameForm) }}
+        {{ form_widget(addGameForm) }}
+        {{ form_rest(addGameForm) }}
+    {{ form_end(addGameForm) }}
+{% endblock %}

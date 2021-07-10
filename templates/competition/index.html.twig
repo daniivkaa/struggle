@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CompetitionController!{% endblock %}
+
+{% block body %}
+    {% for competition in competitions %}
+        <div class = "col-1"></div>
+        <div class="card col-4  mb-4">
+            <div class="card-body">
+                <h5 class="card-title">{{ competition.name }}</h5>
+                <p class="card-text">{{ competition.description }}.</p>
+                <a href="{{ path('show_competition', {'competition': competition.id}) }}">Подробнее</a>
+            </div>
+        </div>
+        <div class = "col-1"></div>
+    {% endfor %}
+{% endblock %}

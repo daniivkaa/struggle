@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create Competition{% endblock %}
+
+{% block body %}
+    {{ form_start(competitionForm) }}
+        {{ form_widget(competitionForm) }}
+        <button type="submit" class="btn btn-primary">Отправить</button>
+    {{ form_end(competitionForm) }}
+{% endblock %}
