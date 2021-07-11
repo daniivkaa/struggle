@@ -64,10 +64,16 @@ class Competition
      */
     private $games;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Rating::class, mappedBy="competition")
+     */
+    private $ratings;
+
     public function __construct()
     {
         $this->players = new ArrayCollection();
         $this->games = new ArrayCollection();
+        $this->ratings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -213,6 +219,36 @@ class Competition
             // set the owning side to null (unless already changed)
             if ($game->getCompetition() === $this) {
                 $game->setCompetition(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Rating[]
+     */
+    public function getRatings(): Collection
+    {
+        return $this->ratings;
+    }
+
+    public function addRating(Rating $rating): self
+    {
+        if (!$this->ratings->contains($rating)) {
+            $this->ratings[] = $rating;
+            $rating->setCompetition($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRating(Rating $rating): self
+    {
+        if ($this->ratings->removeElement($rating)) {
+            // set the owning side to null (unless already changed)
+            if ($rating->getCompetition() === $this) {
+                $rating->setCompetition(null);
             }
         }
 

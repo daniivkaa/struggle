@@ -5,4 +5,8 @@
 {% block body %}
     <h1>{{ competition.name }}</h1>
     <h1>{{ competition.description }}</h1>
+
+    {% for rating in ratings %}
+        <p> Место: {{ rating.place }} Игрок: {{ rating.player.firstName }}</p>
+    {% endfor %}
 {% endblock %}

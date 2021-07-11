@@ -6,6 +6,7 @@ use App\Entity\Competition;
 use App\Entity\Game;
 use App\Entity\Player;
 use App\Entity\PlayersGame;
+use App\Entity\Rating;
 use App\Entity\User;
 use App\Form\CompetitionType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -60,10 +61,13 @@ class CompetitionController extends AbstractController
     /**
      * @Route("/competition/show/{competition}", name="show_competition")
      */
-    public function showCompetition(Competition $competition): Response
+    public function showCompetition(Competition $competition, EntityManagerInterface $em): Response
     {
+        $ratings = $em->getRepository(Rating::class)->findBy(['competition' => $competition], ['place' => 'ASC']);
+
         return $this->render('competition/show.html.twig', [
             'competition' => $competition,
+            'ratings' => $ratings,
         ]);
     }
 
@@ -76,14 +80,18 @@ class CompetitionController extends AbstractController
         $gameForms = [];
         foreach($games as $game){
             $gameId = $game->getId();
-            $firstplayer = $game->getFirstPlayer()->getFirstName();
-            $secondPlayer = $game->getSecondPlayer()->getFirstName();
+            $firstPlayer = $game->getFirstPlayer();
+            $secondPlayer = $game->getSecondPlayer();
+
+            $firstPlayerName = $firstPlayer->getFirstName();
+            $secondPlayerName = $secondPlayer->getFirstName();
+
             $defaultData = ['message' => 'Type your message here'];
             $gameForm  = $this->createFormBuilder($defaultData)
                 ->add("choices$gameId", ChoiceType::class, [
                     'choices' => [
-                        $firstplayer => 1,
-                        $secondPlayer => 2,
+                        $firstPlayerName => 1,
+                        $secondPlayerName => 2,
                     ]
                 ])
                 ->add("save$gameId", SubmitType::class, ['label' => "End game $gameId"])
@@ -93,17 +101,30 @@ class CompetitionController extends AbstractController
 
             if($gameForm->isSubmitted() && $gameForm->isValid()){
                 $choces = $gameForm->get("choices$gameId")->getData();
-                if($choces == 1){
+                $winer = Player::class;
+                if($choces === 1){
                     $winer = $game->getFirstPlayer();
                     $game->setWiner($winer);
                 }
-                else if($choces == 2){
+                else if($choces === 2){
                     $winer = $game->getSecondPlayer();
                     $game->setWiner($winer);
                 }
                 $game->setIsActive(false);
                 $game->setEndedAt(new \DateTime('now'));
                 $em->persist($game);
+
+                $firstPlayer->setIsActive(false);
+                $em->persist($firstPlayer);
+
+                $secondPlayer->setIsActive(false);
+                $em->persist($secondPlayer);
+
+                $rating = $em->getRepository(Rating::class)->findOneBy(['player' => $winer]);
+                $countWin = $rating->getCountWin() + 1;
+                $rating->setCountWin($countWin);
+                $em->persist($rating);
+
                 $em->flush();
 
                 return $this->redirectToRoute('admin_competition', ['competition' => $competition->getId()]);
@@ -117,9 +138,37 @@ class CompetitionController extends AbstractController
         $addGameForm->handleRequest($request);
 
         if ($addGameForm->isSubmitted() && $addGameForm->isValid()) {
-            $players = $em->getRepository(Player::class)->findBy(['competition' => $competition, 'isActive' => false], [], 2);
-            $firstPlayer = array_shift($players);
-            $secondPlayer = array_shift($players);
+
+            $players = $em->getRepository(Player::class)->findBy(['competition' => $competition, 'isActive' => false]);
+            $countPlayer = count($em->getRepository(Player::class)->findBy(['competition' => $competition]));
+
+            $firstPlayer = Player::class;
+            $secondPlayer = Player::class;
+
+            foreach($players as $player){
+                $idPlayer = $player->getId();
+                $countGames = count($em->getRepository(PlayersGame::class)->findBy(['targetPlayer' => $idPlayer]));
+                if($countGames < $countPlayer){
+                    $firstPlayer = $player;
+                    break;
+                }
+            }
+
+            foreach($players as $player){
+                $idSecondPlayer = $player->getId();
+                $idFirstPlayer = $firstPlayer->getId();
+                if($player === $firstPlayer) {
+                    continue;
+                }
+                $countGamesWidthPlayer = count($em->getRepository(PlayersGame::class)->findBy(['targetPlayer' => $idFirstPlayer, 'secondPlayer' => $idSecondPlayer]));
+                if($countGamesWidthPlayer === 0){
+                    $secondPlayer = $player;
+                    break;
+                }
+            }
+
+            //$firstPlayer = array_shift($players);
+            //$secondPlayer = array_shift($players);
 
             $firstPlayer->setIsActive(true);
             $playersGameFirst = new PlayersGame();
@@ -147,9 +196,29 @@ class CompetitionController extends AbstractController
             return $this->redirectToRoute('admin_competition', ['competition' => $competition->getId()]);
         }
 
+        $defaultData = ['message' => 'Type your message here'];
+        $endGameForm  = $this->createFormBuilder($defaultData)
+            ->add('endSave', SubmitType::class, ['label' => 'End game'])
+            ->getForm();
+        $endGameForm->handleRequest($request);
+
+        if ($endGameForm->isSubmitted() && $endGameForm->isValid()) {
+            $ratings = $em->getRepository(Rating::class)->findBy(['competition' => $competition], ['countWin' => 'DESC']);
+            $i = 1;
+            foreach($ratings as $rating){
+                $rating->setPlace($i);
+                $em->persist($rating);
+                $i++;
+            }
+            $em->flush();
+
+            return $this->redirectToRoute('admin_competition', ['competition' => $competition->getId()]);
+        }
+
         return $this->render('competition/admin.html.twig', [
             'competition' => $competition,
             'addGameForm' => $addGameForm->createView(),
+            'endGameForm' => $endGameForm->createView(),
             'gameForms' => $gameForms,
         ]);
     }
@@ -187,8 +256,14 @@ class CompetitionController extends AbstractController
                 $player->setPatronymic($user->getPatronymic());
                 $player->setIsActive(false);
                 $player->setUsers($user);
-
                 $em->persist($player);
+
+                $rating = new Rating();
+                $rating->setPlayer($player);
+                $rating->setCompetition($competition);
+                $rating->setCountWin(0);
+                $em->persist($rating);
+
                 $em->flush();
 
                 return $this->redirectToRoute('show_competition', ['competition' => $competition->getId()]);
