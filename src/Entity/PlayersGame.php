@@ -27,6 +27,18 @@ class PlayersGame
      */
     private $secondPlayer;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Competition::class)
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $competition;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Game::class)
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $game;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -52,6 +64,30 @@ class PlayersGame
     public function setSecondPlayer(?Player $secondPlayer): self
     {
         $this->secondPlayer = $secondPlayer;
+
+        return $this;
+    }
+
+    public function getCompetition(): ?Competition
+    {
+        return $this->competition;
+    }
+
+    public function setCompetition(?Competition $competition): self
+    {
+        $this->competition = $competition;
+
+        return $this;
+    }
+
+    public function getGame(): ?Game
+    {
+        return $this->game;
+    }
+
+    public function setGame(?Game $game): self
+    {
+        $this->game = $game;
 
         return $this;
     }

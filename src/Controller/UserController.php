@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Competition;
 use App\Entity\Game;
 use App\Entity\Player;
+use App\Entity\PlayersGame;
+use App\Entity\Rating;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,9 +17,9 @@ use Symfony\Component\HttpFoundation\Request;
 class UserController extends AbstractController
 {
     /**
-     * @Route("/user/show/{user}", name="user_show")
+     * @Route("/user/profile/{user}", name="user_show")
      */
-    public function index(User $user, EntityManagerInterface $em): Response
+    public function profile(User $user, EntityManagerInterface $em): Response
     {
         $competitions = [];
         if ($user !== $this->getUser()) {
@@ -27,9 +29,15 @@ class UserController extends AbstractController
         foreach($players as $player){
             $competitionId = $player->getCompetition()->getId();
             $competition = $em->getRepository(Competition::class)->find($competitionId);
-            $competitions[$competitionId] = $competition;
+            $competitions[$competitionId]['competition'] = $competition;
+
+            $playersGame = $em->getRepository(PlayersGame::class)->findBy(['targetPlayer' => $player]);
+            $competitions[$competitionId]['playersGame'] = $playersGame;
+
+            $rating = $em->getRepository(Rating::class)->findOneBy(['player' => $player]);
+            $competitions[$competitionId]['rating'] = $rating;
         }
-        return $this->render('user/show.html.twig', [
+        return $this->render('user/profile.html.twig', [
             'competitions' => $competitions,
         ]);
     }
