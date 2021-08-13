@@ -17,9 +17,9 @@ use Symfony\Component\HttpFoundation\Request;
 class UserController extends AbstractController
 {
     /**
-     * @Route("/user/profile/{user}", name="user_show")
+     * @Route("/user/history/{user}", name="user_show")
      */
-    public function profile(User $user, EntityManagerInterface $em): Response
+    public function history(User $user, EntityManagerInterface $em): Response
     {
         $competitions = [];
         if ($user !== $this->getUser()) {

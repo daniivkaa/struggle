@@ -69,6 +69,21 @@ class Competition
      */
     private $ratings;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $public;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $type;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $double;
+
     public function __construct()
     {
         $this->players = new ArrayCollection();
@@ -251,6 +266,42 @@ class Competition
                 $rating->setCompetition(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPublic(): ?bool
+    {
+        return $this->public;
+    }
+
+    public function setPublic(bool $public): self
+    {
+        $this->public = $public;
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    public function getDouble(): ?bool
+    {
+        return $this->double;
+    }
+
+    public function setDouble(bool $double): self
+    {
+        $this->double = $double;
 
         return $this;
     }
