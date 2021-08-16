@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello MessageController!{% endblock %}
+
+{% block body %}
+    {% for message in messages %}
+        <a href = "{{ path("user_message", {'secondUser' : message.secondUser.id}) }}">{{ message.id }}</a>
+    {% endfor %}
+{% endblock %}

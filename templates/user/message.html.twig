@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello UserController!{% endblock %}
+
+{% block body %}
+    <h1>Переписка {{ targetUser.firstName }} и {{ secondUser.firstName }}</h1>
+    {% for comment in message.comments %}
+        <p>{{ comment.content }} написал: {{ comment.targetUser.firstName }}</p>
+    {% endfor %}
+
+    {{ form_start(commentForm) }}
+    {{ form_widget(commentForm) }}
+    <button type="submit" class="btn btn-primary">Отправить</button>
+    {{ form_end(commentForm) }}
+{% endblock %}

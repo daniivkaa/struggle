@@ -2,12 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Competition;
 use App\Entity\Game;
+use App\Entity\Message;
 use App\Entity\Player;
 use App\Entity\PlayersGame;
 use App\Entity\Rating;
 use App\Entity\User;
+use App\Form\CommentType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 class UserController extends AbstractController
 {
     /**
-     * @Route("/user/history/{user}", name="user_show")
+     * @Route("/user/history/{user}", name="user_history")
      */
     public function history(User $user, EntityManagerInterface $em): Response
     {
@@ -39,6 +42,17 @@ class UserController extends AbstractController
         }
         return $this->render('user/profile.html.twig', [
             'competitions' => $competitions,
+        ]);
+    }
+
+    /**
+     * @Route("/user/show/{secondUser}", name="user_show")
+     */
+    public function show(User $secondUser, EntityManagerInterface $em): Response
+    {
+
+        return $this->render('user/show.html.twig', [
+            'secondUser' => $secondUser,
         ]);
     }
 }

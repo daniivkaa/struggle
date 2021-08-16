@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello UserController!{% endblock %}
+
+{% block body %}
+    <h1>{{ secondUser.firstName }}</h1>
+        <h2>
+            <a href = "{{ path('add_friend', {secondUser: secondUser.id})}}">Добавить в друзья</a>
+        </h2>
+{% endblock %}
