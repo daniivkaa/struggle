@@ -42,7 +42,7 @@ class CompetitionController extends AbstractController
      */
     public function index(EntityManagerInterface $em): Response
     {
-        $competition = $em->getRepository(Competition::class)->findBy([], ['id' => 'DESC']);
+        $competition = $em->getRepository(Competition::class)->findBy(['public' => true], ['id' => 'DESC']);
         return $this->render('competition/index.html.twig', [
             'competitions' => $competition,
         ]);
@@ -53,14 +53,15 @@ class CompetitionController extends AbstractController
      */
     public function createCompetition(Request $request): Response
     {
+        $lider = $this->getUser();
         $competition = new Competition();
         $competitionForm= $this->createForm(CompetitionType::class, $competition);
         $competitionForm->handleRequest($request);
 
         if ($competitionForm->isSubmitted() && $competitionForm->isValid()) {
-            $this->competitionService->createCompetition($competition);
+            $this->competitionService->createCompetition($competition, $lider);
 
-            return $this->redirectToRoute('show_competition', ['competition' => $competition->getId()]);
+            return $this->redirectToRoute('admin_competition', ['competition' => $competition->getId()]);
         }
 
         return $this->render('competition/create.html.twig', [
@@ -181,6 +182,19 @@ class CompetitionController extends AbstractController
         return $this->render('competition/addPlayer.html.twig', [
             'competition' => $competition,
             'addForm' => $addForm->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/competition/history/{competition}", name="history_competition")
+     */
+    public function historyCompetition(Competition $competition, EntityManagerInterface $em): Response
+    {
+        if($competition->getIsActive() === true){
+            return $this->redirectToRoute('competition');
+        }
+        return $this->render('competition/history.html.twig', [
+            'competition' => $competition,
         ]);
     }
 }

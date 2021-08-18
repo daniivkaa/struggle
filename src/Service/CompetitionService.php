@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Competition;
+use App\Entity\User;
 use App\Repository\RatingRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -29,13 +30,17 @@ class CompetitionService
             $i++;
         }
 
+        $competition->setIsActive(false);
+        $this->em->persist($competition);
+
         $this->em->flush();
     }
 
-    public function createCompetition(Competition $competition):void
+    public function createCompetition(Competition $competition, User $lider):void
     {
         $competition->setCode(md5(time()));
         $competition->setIsActive(true);
+        $competition->setLider($lider);
 
         $this->em->persist($competition);
         $this->em->flush();

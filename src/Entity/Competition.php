@@ -40,7 +40,7 @@ class Competition
     private $players;
 
     /**
-     * @ORM\Column(type="time")
+     * @ORM\Column(type="time", nullable=true)
      */
     private $time;
 
@@ -50,7 +50,7 @@ class Competition
     private $code;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="date", nullable=true)
      */
     private $day;
 
@@ -83,6 +83,11 @@ class Competition
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $double;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class)
+     */
+    private $lider;
 
     public function __construct()
     {
@@ -302,6 +307,18 @@ class Competition
     public function setDouble(bool $double): self
     {
         $this->double = $double;
+
+        return $this;
+    }
+
+    public function getLider(): ?User
+    {
+        return $this->lider;
+    }
+
+    public function setLider(?User $lider): self
+    {
+        $this->lider = $lider;
 
         return $this;
     }

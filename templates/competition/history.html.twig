@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add Player{% endblock %}
+
+{% block body %}
+    <h1>{{ competition.name }}</h1>
+
+    {% for game in competition.games %}
+        <p>Игрок {{ game.firstPlayer.firstName }} играл против {{ game.secondPlayer.firstName }}</p>
+        <p>Победил игрок {{ game.winer.firstName }}</p>
+        <hr>
+    {% endfor %}
+{% endblock %}
