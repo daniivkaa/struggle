@@ -8,6 +8,7 @@
         <div class="card col-4  mb-4">
             <div class="card-body">
                 <h5 class="card-title">{{ competition.name }}</h5>
+                <a href="{{ path('user_show', {'secondUser': competition.lider.id}) }}">{{ competition.lider.firstName }}</a>
                 <p class="card-text">{{ competition.description }}.</p>
                 <a href="{{ path('show_competition', {'competition': competition.id}) }}">Подробнее</a>
             </div>

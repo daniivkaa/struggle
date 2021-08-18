@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Show Competition{% endblock %}
+
+{% block body %}
+    <h1>{{ competition.name }}</h1>
+
+    <h2>{{ player.firstName }}</h2>
+
+    <a href = "{{ path('user_show', {'secondUser': competition.lider.id}) }}">Написать руководителю</a>
+
+{% endblock %}

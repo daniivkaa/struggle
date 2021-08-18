@@ -151,12 +151,15 @@ class CompetitionController extends AbstractController
     }
 
     /**
-     * @Route("/competition/player/{competition}", name="player_competition")
+     * @Route("/competition/player/{player}", name="player_competition")
      */
-    public function playerCompetition(Competition $competition): Response
+    public function playerCompetition(Player $player): Response
     {
-        return $this->render('competition/show.html.twig', [
+        $competition = $player->getCompetition();
+
+        return $this->render('competition/player.html.twig', [
             'competition' => $competition,
+            'player' => $player,
         ]);
     }
 
