@@ -1,0 +1,20 @@
+{% extends 'user/base_user.html.twig' %}
+
+{% block title %}Hello UserController!{% endblock %}
+
+{% block section %}
+    <h1>Оповещания</h1>
+    {% for notice in notices %}
+        <div class="card w-75  text-center mt-3">
+            <div class="card-body">
+                <h5 class="card-title">
+                    Тип: {{ notice.type }}
+                </h5>
+                {% if notice.secondUser %}
+                    <p>Принять друга: {{ notice.secondUser.firstName}}</p>
+                    <a href = "{{ path('add_friend', {secondUser: notice.secondUser.id})}}">Принять дружбу</a>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

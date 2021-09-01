@@ -30,7 +30,7 @@ class Notice
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
      */
-    private $ыsecondUser;
+    private $secondUser;
 
     /**
      * @ORM\ManyToOne(targetEntity=Competition::class)
@@ -41,6 +41,11 @@ class Notice
      * @ORM\ManyToOne(targetEntity=Game::class)
      */
     private $game;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $active;
 
     public function getId(): ?int
     {
@@ -71,14 +76,14 @@ class Notice
         return $this;
     }
 
-    public function getыsecondUser(): ?User
+    public function getSecondUser(): ?User
     {
-        return $this->ыsecondUser;
+        return $this->secondUser;
     }
 
-    public function setыsecondUser(?User $ыsecondUser): self
+    public function setSecondUser(?User $secondUser): self
     {
-        $this->ыsecondUser = $ыsecondUser;
+        $this->secondUser = $secondUser;
 
         return $this;
     }
@@ -103,6 +108,18 @@ class Notice
     public function setGame(?Game $game): self
     {
         $this->game = $game;
+
+        return $this;
+    }
+
+    public function getActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): self
+    {
+        $this->active = $active;
 
         return $this;
     }

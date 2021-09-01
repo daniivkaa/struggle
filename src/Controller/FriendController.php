@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Friend;
+use App\Entity\Notice;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,9 +21,13 @@ class FriendController extends AbstractController
         $user = $this->getUser();
 
         $friend = $em->getRepository(Friend::class)->findOneBy(["targetUser" => $user, "secondUser" => $secondUser]);
-        if($friend){
+        $notice = $em->getRepository(Notice::class)->findOneBy(["targetUser" => $user, "secondUser" => $secondUser, 'active' => true]);
+        if($friend || !$notice){
             return $this->redirectToRoute("user_show", ['secondUser' => $secondUser->getId()]);
         }
+        $notice->setActive(false);
+        $em->persist($notice);
+
         $targetFriend = new Friend();
         $secondFriend = new Friend();
 
@@ -36,6 +41,6 @@ class FriendController extends AbstractController
 
         $em->flush();
 
-        return $this->redirectToRoute("user_show", ['secondUser' => $secondUser->getId()]);
+        return $this->redirectToRoute("notice");
     }
 }
