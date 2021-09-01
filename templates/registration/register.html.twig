@@ -7,15 +7,31 @@
         <div class="alert alert-danger" role="alert">{{ flashError }}</div>
     {% endfor %}
 
-    <h1>Register</h1>
-
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
-
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+    <div class="container mt-5 col-4">
+        <h2 class = "text-center">Регистрация</h2>
+        {{ form_start(registrationForm) }}
+            <div class="mb-3">
+                {{ form_row(registrationForm.email, {'attr': {label: 'Email', 'class': 'form-control'}}) }}
+            </div>
+            <div class="mb-3">
+                {{ form_row(registrationForm.plainPassword, {'attr': {label: 'Пароль', 'class': 'form-control'}}) }}
+            </div>
+            <div class="mb-3">
+                {{ form_row(registrationForm.firstName, {'attr': {label: 'Имя', 'class': 'form-control'}}) }}
+            </div>
+            <div class="mb-3">
+                {{ form_row(registrationForm.lastName, {'attr': {label: 'Фамилия', 'class': 'form-control'}}) }}
+            </div>
+            <div class="mb-3">
+                {{ form_row(registrationForm.patronymic, {'attr': {label: 'Отчество', 'class': 'form-control'}}) }}
+            </div>
+            <div class="mb-3 form-check">
+                {{ form_row(registrationForm.agreeTerms, {'attr': {label: 'Согласен', 'class': 'form-check-input'}}) }}
+            </div>
+            <input type="hidden" name="_csrf_token"
+                   value="{{ csrf_token('authenticate') }}"
+            >
+            <button type="submit" class="btn btn-primary">Войти</button>
+        {{ form_end(registrationForm) }}
+    </div>
 {% endblock %}

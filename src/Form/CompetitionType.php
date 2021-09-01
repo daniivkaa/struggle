@@ -30,12 +30,6 @@ class CompetitionType extends AbstractType
                     "Олимпийское" => "olimp",
                 ]
             ])
-            ->add("public", ChoiceType::class, [
-                'choices' => [
-                    "Закрытое" => false,
-                    "Публичное" => true,
-                ]
-            ])
             ->add("double", ChoiceType::class, [
                 'choices' => [
                     "Обычное" => false,

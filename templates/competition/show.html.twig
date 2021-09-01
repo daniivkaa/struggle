@@ -3,6 +3,7 @@
 {% block title %}Show Competition{% endblock %}
 
 {% block body %}
+    <a href = "{{ path("history_competition", {competition:competition.id}) }}">История</a>
     <h1>{{ competition.name }}</h1>
     <h1>{{ competition.description }}</h1>
 

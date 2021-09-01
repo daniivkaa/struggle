@@ -1,0 +1,18 @@
+{% extends 'user/base_user.html.twig' %}
+
+{% block title %}Hello UserController!{% endblock %}
+
+{% block section %}
+    <h2>Соревнования в которых принимал участие</h2>
+    {% for competition in competitions %}
+        <div class="card w-75  text-center mt-3">
+            <div class="card-body">
+                <h5 class="card-title">
+                    {{ competition['competition'].name }}
+                </h5>
+                <p class="card-text">Вы заняли {{ competition['rating'].place }} место и победили {{ competition['rating'].countWin }} раз</p>
+                <a href="{{ path('user_history_games', {competition:competition['competition'].id}) }}" class="btn btn-primary">Подробнее</a>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

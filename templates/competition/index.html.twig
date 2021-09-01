@@ -3,14 +3,24 @@
 {% block title %}Hello CompetitionController!{% endblock %}
 
 {% block body %}
+    <div class = "mb-3">
+        <hr>
+        <a href="{{ path('create_competition') }}">Создать соревнование</a>
+        <hr>
+        {{ render(controller('App\\Controller\\CompetitionController::addPlayer')) }}
+        <hr>
+    </div>
     {% for competition in competitions %}
-        <div class = "col-1"></div>
-        <div class="card col-4  mb-4">
-            <div class="card-body">
-                <h5 class="card-title">{{ competition.name }}</h5>
-                <a href="{{ path('user_show', {'secondUser': competition.lider.id}) }}">{{ competition.lider.firstName }}</a>
-                <p class="card-text">{{ competition.description }}.</p>
-                <a href="{{ path('show_competition', {'competition': competition.id}) }}">Подробнее</a>
+        <div class = "container">
+            <div class="card col-4 mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">{{ competition.name }}</h5>
+                    <a href="{{ path('user_show', {'secondUser': competition.lider.id}) }}">{{ competition.lider.firstName }}</a>
+                    <p class="card-text">{{ competition.description }}</p>
+                    <a href = "{{ path('user_show', {'secondUser': competition.lider.id}) }}">Написать руководителю</a>
+                    <hr>
+                    <a href="{{ path('show_competition', {'competition': competition.id}) }}">Подробнее</a>
+                </div>
             </div>
         </div>
         <div class = "col-1"></div>

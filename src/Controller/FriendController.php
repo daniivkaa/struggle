@@ -18,6 +18,11 @@ class FriendController extends AbstractController
     public function addFriend(User $secondUser, EntityManagerInterface $em)
     {
         $user = $this->getUser();
+
+        $friend = $em->getRepository(Friend::class)->findOneBy(["targetUser" => $user, "secondUser" => $secondUser]);
+        if($friend){
+            return $this->redirectToRoute("user_show", ['secondUser' => $secondUser->getId()]);
+        }
         $targetFriend = new Friend();
         $secondFriend = new Friend();
 

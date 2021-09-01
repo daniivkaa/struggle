@@ -1,0 +1,18 @@
+{% extends 'competition/lider/base_lider.html.twig' %}
+
+{% block title %}Hello UserController!{% endblock %}
+
+{% block section %}
+    <h2>Лидер {{ competition.lider.firstName }}</h2>
+        <div class="card w-75  text-center mt-3">
+            <div class="card-body">
+                <h5 class="card-title">
+                    Название: {{ competition.name }}
+                </h5>
+                <p class="card-text">Описание: {{ competition.description }}</p>
+                <p class="card-text">День проведения: {{ competition.day | date("m.d.Y") }}</p>
+                <p class="card-text">Время проведения: {{ competition.time | date('H:i') }}</p>
+                <p class="card-text">Код: {{ competition.code}}</p>
+            </div>
+        </div>
+{% endblock %}

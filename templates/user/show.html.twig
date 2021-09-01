@@ -3,8 +3,20 @@
 {% block title %}Hello UserController!{% endblock %}
 
 {% block body %}
-    <h1>{{ secondUser.firstName }}</h1>
-        <h2>
+    <h2 class = "text-center">Пользователь: {{ secondUser.firstName }}</h2>
+    <div class = "d-flex justify-content-end">
+        <h4 class = "p-2">
             <a href = "{{ path('add_friend', {secondUser: secondUser.id})}}">Добавить в друзья</a>
-        </h2>
+        </h4>
+        <h4 class = "p-2">
+            <a href = "{{ path('user_message', {secondUser: secondUser.id})}}">Написать сообщение</a>
+        </h4>
+    </div>
+    <div class = "container">
+        <h3>ФИО</h3>
+        <p>{{ secondUser.lastName }} {{ secondUser.firstName }} {{ secondUser.patronymic }}</p>
+        <h3>Количество участий в соревнованиях</h3>
+        <p>{{ countCompetition }}</p>
+    </div>
+
 {% endblock %}

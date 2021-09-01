@@ -1,0 +1,17 @@
+{% extends 'user/base_user.html.twig' %}
+
+{% block title %}Hello UserController!{% endblock %}
+
+{% block section %}
+    <h2>Друзья</h2>
+    {% for friend in friends %}
+        <div class="card w-75  text-center mt-3">
+            <div class="card-body">
+                <h5 class="card-title">
+                    {{ friend.secondUser.firstName }}
+                </h5>
+                <a href="{{ path('user_show', {secondUser:friend.secondUser.id}) }}" class="btn btn-primary">Посмотреть</a>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

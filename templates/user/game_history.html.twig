@@ -1,0 +1,18 @@
+{% extends 'user/base_user.html.twig' %}
+
+{% block title %}Hello UserController!{% endblock %}
+
+{% block section %}
+    <h2>Игры</h2>
+    <a href="{{ path('user_history', {user:app.user.id}) }}" class="btn btn-primary">Вернуться</a>
+    {% for game in games %}
+        <div class="card w-75  text-center mt-3">
+            <div class="card-body">
+                <h5 class="card-title">
+                    {{ game.firstPlayer.firstName }} играл против {{ game.secondPlayer.firstName }}
+                </h5>
+                <p>Победил игрок {{ game.winer.firstName }}</p>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

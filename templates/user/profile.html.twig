@@ -1,17 +1,17 @@
-{% extends 'base.html.twig' %}
+{% extends 'user/base_user.html.twig' %}
 
 {% block title %}Hello UserController!{% endblock %}
 
-{% block body %}
-    <h1>Соревнования в которых принимал участие</h1>
-    {% for competition in competitions %}
-        <h2>
-            <a href = "{{ path('show_competition', {competition: competition['competition'].id})}}">{{ competition['competition'].name }}</a>
-        </h2>
-        <p>Вы заняли {{ competition['rating'].place }} место и победили {{ competition['rating'].countWin }} раз</p>
-        {% for playerGame in competition['playersGame'] %}
-            <p>Вы {{ playerGame.targetPlayer.firstName }} играли против {{ playerGame.secondPlayer.firstName }}</p>
-            <p>Победил игрок {{ playerGame.game.winer.firstName }}</p>
-        {% endfor %}
-    {% endfor %}
+{% block section %}
+        <div class="card w-75  text-center mt-3">
+            <div class="card-body">
+                <h5 class="card-title">
+                    Вы: {{ user.firstName }}
+                </h5>
+                <p class="card-text">Имя: {{ user.firstName }}</p>
+                <p class="card-text">Фамилия: {{ user.lastName }}</p>
+                <p class="card-text">Отчество: {{ user.patronymic }}</p>
+                <a href="#">Изменить днанные</a>
+            </div>
+        </div>
 {% endblock %}

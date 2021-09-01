@@ -1,9 +1,17 @@
-{% extends 'base.html.twig' %}
+{% extends 'user/base_user.html.twig' %}
 
 {% block title %}Hello MessageController!{% endblock %}
 
-{% block body %}
+{% block section %}
     {% for message in messages %}
-        <a href = "{{ path("user_message", {'secondUser' : message.secondUser.id}) }}">{{ message.id }}</a>
+        <div class="card w-75  text-center mt-3">
+            <div class="card-body">
+                <h5 class="card-title">
+                    Переписка с {{ message.secondUser.firstName }}
+                </h5>
+                <p>Здесь последнее сообщение</p>
+                <a href="{{ path("user_message", {'secondUser' : message.secondUser.id}) }}" class="btn btn-primary">Подробнее</a>
+            </div>
+        </div>
     {% endfor %}
 {% endblock %}

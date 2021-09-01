@@ -6,14 +6,44 @@
         {# Run `composer require symfony/webpack-encore-bundle`
            and uncomment the following Encore helpers to start using Symfony UX #}
         {% block stylesheets %}
-            {#{{ encore_entry_link_tags('app') }}#}
-        {% endblock %}
-
-        {% block javascripts %}
-            {#{{ encore_entry_script_tags('app') }}#}
+            {{ encore_entry_link_tags('app') }}
         {% endblock %}
     </head>
     <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{{ path('competition') }}">Struggle</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarText">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{{ path('competition') }}">Главная</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Помощь</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Что-то еще</a>
+                        </li>
+                    </ul>
+                    <span class="navbar-text mx-3">
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                            <a class="nav-link btn btn-primary" href="{{ path('messages', { user:app.user.id }) }}">Личный кабинет</a>
+                        {% else %}
+                            <a class="nav-link btn btn-primary" href="{{ path('app_login') }}">Войти</a>
+                            </span>
+                            <span class="navbar-text">
+                            <a class="nav-link btn btn-primary" href="{{ path('app_register') }}">Зарегистрироваться</a>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </nav>
         {% block body %}{% endblock %}
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
     </body>
 </html>

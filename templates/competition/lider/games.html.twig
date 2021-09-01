@@ -1,0 +1,25 @@
+{% extends 'competition/lider/base_lider.html.twig' %}
+
+{% block title %}Hello UserController!{% endblock %}
+
+{% block section %}
+    <h2>Игры</h2>
+    {{ form_start(addGameForm) }}
+        {{ form_widget(addGameForm) }}
+        {{ form_rest(addGameForm) }}
+    {{ form_end(addGameForm) }}
+
+    {% for gameForm in gameForms %}
+        <div class="card w-75  text-center mt-3">
+            <div class="card-body">
+                <h5 class="card-title">
+
+                </h5>
+                {{ form_start(gameForm) }}
+                    {{ form_widget(gameForm) }}
+                    {{ form_rest(gameForm) }}
+                {{ form_end(gameForm) }}
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

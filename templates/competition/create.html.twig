@@ -3,8 +3,34 @@
 {% block title %}Create Competition{% endblock %}
 
 {% block body %}
-    {{ form_start(competitionForm) }}
-        {{ form_widget(competitionForm) }}
-        <button type="submit" class="btn btn-primary">Отправить</button>
-    {{ form_end(competitionForm) }}
+    <div class="container mt-5 col-4">
+        <h2 class = "text-center">Создание соревнования</h2>
+        {{ form_start(competitionForm) }}
+        <div class="mb-3">
+            {{ form_row(competitionForm.name, {'attr': {label: 'Email', 'class': 'form-control'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(competitionForm.description, {'attr': {label: 'Пароль', 'class': 'form-control'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(competitionForm.address, {'attr': {label: 'Имя', 'class': 'form-control'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(competitionForm.day, {'attr': {label: 'Фамилия', 'class': 'form-control'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(competitionForm.time, {'attr': {label: 'Отчество', 'class': 'form-control'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(competitionForm.public, {'attr': {label: 'Отчество', 'class': 'form-control'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(competitionForm.type, {'attr': {label: 'Отчество', 'class': 'form-control'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(competitionForm.double, {'attr': {label: 'Отчество', 'class': 'form-control'}}) }}
+        </div>
+        <button type="submit" class="btn btn-primary">Создать соревнование</button>
+        {{ form_end(competitionForm) }}
+    </div>
 {% endblock %}

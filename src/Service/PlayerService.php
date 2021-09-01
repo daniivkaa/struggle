@@ -24,7 +24,7 @@ class PlayerService
         $this->playersGameRepository = $playersGameRepository;
     }
 
-    public function addPlayer(Competition $competition, User $user):void
+    public function addPlayer(Competition $competition, User $user)
     {
         $player = new Player();
         $player->setCompetition($competition);
@@ -42,6 +42,8 @@ class PlayerService
         $this->em->persist($rating);
 
         $this->em->flush();
+
+        return $player;
     }
 
     public function pickPlayer($competition){

@@ -42,6 +42,7 @@ class CompetitionController extends AbstractController
      */
     public function index(EntityManagerInterface $em): Response
     {
+        $user = $this->getUser();
         $competition = $em->getRepository(Competition::class)->findBy(['public' => true], ['id' => 'DESC']);
         return $this->render('competition/index.html.twig', [
             'competitions' => $competition,
@@ -84,9 +85,9 @@ class CompetitionController extends AbstractController
     }
 
     /**
-     * @Route("/competition/admin/{competition}", name="admin_competition")
+     * @Route("/competition/admin/games/{competition}", name="admin_competition_game")
      */
-    public function adminCompetition(Request $request, Competition $competition, EntityManagerInterface $em): Response
+    public function adminCompetitionGames(Request $request, Competition $competition, EntityManagerInterface $em): Response
     {
         $games = $em->getRepository(Game::class)->findBy(['competition' => $competition, 'isActive' => true]);
         $gameForms = [];
@@ -110,7 +111,7 @@ class CompetitionController extends AbstractController
 
                 $this->gameService->endGame($game, $firstPlayer, $secondPlayer, $choces);
 
-                return $this->redirectToRoute('admin_competition', ['competition' => $competition->getId()]);
+                return $this->redirectToRoute('admin_competition_game', ['competition' => $competition->getId()]);
             }
         }
 
@@ -128,26 +129,47 @@ class CompetitionController extends AbstractController
 
             $this->gameService->createGame($data);
 
-            return $this->redirectToRoute('admin_competition', ['competition' => $competition->getId()]);
+            return $this->redirectToRoute('admin_competition_game', ['competition' => $competition->getId()]);
         }
 
-        //Форма завершения соревнования
-
-        $endGameForm  = $this->createForm(EndGameType::class);
-        $endGameForm->handleRequest($request);
-
-        if ($endGameForm->isSubmitted() && $endGameForm->isValid()) {
-            $this->competitionService->endCompetition($competition);
-
-            return $this->redirectToRoute('admin_competition', ['competition' => $competition->getId()]);
-        }
-
-        return $this->render('competition/admin.html.twig', [
+        return $this->render('competition/lider/games.html.twig', [
             'competition' => $competition,
             'addGameForm' => $addGameForm->createView(),
-            'endGameForm' => $endGameForm->createView(),
             'gameForms' => $gameForms,
         ]);
+    }
+
+    /**
+     * @Route("/competition/admin/players/{competition}", name="admin_competition_players")
+     */
+    public function adminCompetitionPlayers(Competition $competition, EntityManagerInterface $em): Response
+    {
+        $players = $em->getRepository(Player::class)->findBy(["competition" => $competition]);
+
+        return $this->render('competition/lider/players.html.twig', [
+            'competition' => $competition,
+            'players' => $players,
+        ]);
+    }
+
+    /**
+     * @Route("/competition/admin/profile/{competition}", name="admin_competition_profile")
+     */
+    public function adminCompetitionProfile(Competition $competition, EntityManagerInterface $em): Response
+    {
+        return $this->render('competition/lider/profile.html.twig', [
+            'competition' => $competition,
+        ]);
+    }
+
+    /**
+     * @Route("/competition/admin/end/{competition}", name="admin_competition_end")
+     */
+    public function adminCompetitionEnd(Competition $competition, EntityManagerInterface $em): Response
+    {
+        $this->competitionService->endCompetition($competition);
+
+        return $this->redirectToRoute('admin_competition_game', ['competition' => $competition->getId()]);
     }
 
     /**
@@ -164,26 +186,28 @@ class CompetitionController extends AbstractController
     }
 
     /**
-     * @Route("/competition/add/player/{competition}", name="add_player")
+     * @Route("/competition/add/player", name="add_player")
      */
-    public function addPlayer(Request $request, Competition $competition, EntityManagerInterface $em): Response
+    public function addPlayer(Request $request, EntityManagerInterface $em): Response
     {
-        $addForm  = $this->createForm(AddPlayerType::class);
+        $addForm  = $this->createForm(AddPlayerType::class, null, [
+            'action' => $this->generateUrl('add_player'),
+            'method' => 'POST',
+        ]);
         $addForm->handleRequest($request);
         if ($addForm->isSubmitted() && $addForm->isValid()) {
             $hash = $addForm->get('code')->getData();
-            $competitionHash = $competition->getCode();
+            $competition = $em->getRepository(Competition::class)->findOneBy(["code" => $hash]);
 
-            if ($hash == $competitionHash) {
+            if ($competition) {
                 $user = $this->getUser();
-                $this->playerService->addPlayer($competition, $user);
+                $player = $this->playerService->addPlayer($competition, $user);
 
-                return $this->redirectToRoute('show_competition', ['competition' => $competition->getId()]);
+                return $this->redirectToRoute('player_competition', ['player' => $player->getId()]);
             }
         }
 
         return $this->render('competition/addPlayer.html.twig', [
-            'competition' => $competition,
             'addForm' => $addForm->createView(),
         ]);
     }

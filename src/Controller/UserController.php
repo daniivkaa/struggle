@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Comment;
 use App\Entity\Competition;
+use App\Entity\Friend;
 use App\Entity\Game;
 use App\Entity\Message;
 use App\Entity\Player;
@@ -24,6 +25,7 @@ class UserController extends AbstractController
      */
     public function history(User $user, EntityManagerInterface $em): Response
     {
+
         $competitions = [];
         if ($user !== $this->getUser()) {
             return $this->redirectToRoute('competition');
@@ -34,14 +36,28 @@ class UserController extends AbstractController
             $competition = $em->getRepository(Competition::class)->find($competitionId);
             $competitions[$competitionId]['competition'] = $competition;
 
-            $playersGame = $em->getRepository(PlayersGame::class)->findBy(['targetPlayer' => $player]);
-            $competitions[$competitionId]['playersGame'] = $playersGame;
-
             $rating = $em->getRepository(Rating::class)->findOneBy(['player' => $player]);
             $competitions[$competitionId]['rating'] = $rating;
         }
-        return $this->render('user/profile.html.twig', [
+        return $this->render('user/history.html.twig', [
             'competitions' => $competitions,
+        ]);
+    }
+
+    /**
+     * @Route("/user/history/games/{competition}", name="user_history_games")
+     */
+    public function gameHistory(Competition $competition, EntityManagerInterface $em): Response
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('competition');
+        }
+
+        $games = $em->getRepository(Game::class)->findBy(['competition' => $competition]);
+
+        return $this->render('user/game_history.html.twig', [
+            'games' => $games,
         ]);
     }
 
@@ -50,9 +66,32 @@ class UserController extends AbstractController
      */
     public function show(User $secondUser, EntityManagerInterface $em): Response
     {
-
+        $countCompetition = count($secondUser->getPlayers());
         return $this->render('user/show.html.twig', [
             'secondUser' => $secondUser,
+            'countCompetition' => $countCompetition,
+        ]);
+    }
+
+    /**
+     * @Route("/user/friends/{user}", name="friends_show")
+     */
+    public function friendsShow(User $user, EntityManagerInterface $em): Response
+    {
+        $friends = $em->getRepository(Friend::class)->findBy(["targetUser" => $user]);
+
+        return $this->render('user/friends.html.twig', [
+            "friends" => $friends,
+        ]);
+    }
+
+    /**
+     * @Route("/user/profile/{user}", name="user_profile")
+     */
+    public function profile(User $user, EntityManagerInterface $em): Response
+    {
+        return $this->render('user/profile.html.twig', [
+            "user" => $user,
         ]);
     }
 }

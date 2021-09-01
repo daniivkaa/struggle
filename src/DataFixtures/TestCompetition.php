@@ -62,7 +62,7 @@ class TestCompetition extends Fixture
                 $user[$i]->setFirstName("name$i");
                 $user[$i]->setLastName("lastName$i");
                 $user[$i]->setPatronymic("patronymic$i");
-                $password = $this->hash->hashPassword($user[$i], "$i");
+                $password = $this->hash->hashPassword($user[$i], '123456');
                 $user[$i]->setPassword($password);
             $manager->persist($user[$i]);
 

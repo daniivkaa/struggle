@@ -1,0 +1,17 @@
+{% extends 'competition/lider/base_lider.html.twig' %}
+
+{% block title %}Hello UserController!{% endblock %}
+
+{% block section %}
+    <h2>Игроки</h2>
+    {% for player in players %}
+        <div class="card w-75  text-center mt-3">
+            <div class="card-body">
+                <h5 class="card-title">
+                    {{ player.firstName }}
+                </h5>
+                <a href="{{ path('user_show', {secondUser:player.users.id}) }}" class="btn btn-primary">Посмотреть</a>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
