@@ -3,7 +3,7 @@
 {% block title %}Hello UserController!{% endblock %}
 
 {% block section %}
-    <h1>Переписка {{ targetUser.firstName }} и {{ secondUser.firstName }}</h1>
+    <h1>Переписка с <a href = "{{ path("user_show", {secondUser:secondUser.id}) }}">{{ secondUser.firstName }}</a></h1>
     {% for comment in message.comments %}
         <p>{{ comment.content }} написал: {{ comment.targetUser.firstName }}</p>
     {% endfor %}

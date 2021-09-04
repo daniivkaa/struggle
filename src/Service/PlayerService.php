@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Competition;
+use App\Entity\Notice;
 use App\Entity\Player;
 use App\Entity\Rating;
 use App\Entity\User;
@@ -40,6 +41,13 @@ class PlayerService
         $rating->setCompetition($competition);
         $rating->setCountWin(0);
         $this->em->persist($rating);
+
+        $notice = new Notice();
+            $notice->setType("competition");
+            $notice->setTargetUser($user);
+            $notice->setCompetition($competition);
+            $notice->setActive(true);
+        $this->em->persist($notice);
 
         $this->em->flush();
 

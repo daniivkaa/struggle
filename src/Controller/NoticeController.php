@@ -33,9 +33,9 @@ class NoticeController extends AbstractController
         $user = $this->getUser();
 
         $isFriend = $em->getRepository(Friend::class)->findOneBy(["targetUser" => $user, "secondUser" => $secondUser]);
-        $isNotice = $em->getRepository(Notice::class)->findOneBy(["targetUser" => $user, "secondUser" => $secondUser]);
+        $isNotice = $em->getRepository(Notice::class)->findOneBy(["secondUser" => $user, "targetUser" => $secondUser]);
 
-        if($isFriend || $isNotice){
+        if($isFriend || $isNotice || $user->getId() ==  $secondUser->getId()){
             return $this->redirectToRoute("user_show", ['secondUser' => $secondUser->getId()]);
         }
 

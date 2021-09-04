@@ -4,6 +4,7 @@
 
 {% block section %}
     <h2>Друзья</h2>
+    <a href = "{{ path("user_index") }}">Найти друга</a>
     {% for friend in friends %}
         <div class="card w-75  text-center mt-3">
             <div class="card-body">

@@ -4,6 +4,7 @@
 
 {% block section %}
     <h2>Игроки</h2>
+    <a href = "{{ path("invite_users", {competition:competition.id}) }}">Пригласить друзей</a>
     {% for player in players %}
         <div class="card w-75  text-center mt-3">
             <div class="card-body">

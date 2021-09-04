@@ -14,6 +14,18 @@
                     <p>Принять друга: {{ notice.secondUser.firstName}}</p>
                     <a href = "{{ path('add_friend', {secondUser: notice.secondUser.id})}}">Принять дружбу</a>
                 {% endif %}
+                {% if notice.type == "admin_competition" %}
+                    <p>Вы являетесь создантелем соревнования {{ notice.competition.name }}</p>
+                    <a href = "{{ path('admin_competition_game', {competition: notice.competition.id})}}">Перейти в админку</a>
+                {% endif %}
+                {% if notice.type == "invite_competition" %}
+                    <p>Вас пригласили на соревнование: {{ notice.competition.name }}</p>
+                    <a href = "{{ path('connect_competition_invite', {competition: notice.competition.id})}}">Присоединиться</a>
+                {% endif %}
+                {% if notice.type == "competition" %}
+                    <p>Вы участвуете в соревновании: {{ notice.competition.name }}</p>
+                    <a href = "{{ path('show_competition', {competition: notice.competition.id})}}">Перейти</a>
+                {% endif %}
             </div>
         </div>
     {% endfor %}

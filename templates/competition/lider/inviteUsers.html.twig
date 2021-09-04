@@ -1,0 +1,17 @@
+{% extends 'competition/lider/base_lider.html.twig' %}
+
+{% block title %}Hello UserController!{% endblock %}
+
+{% block section %}
+    <div class="container mt-5 col-3">
+        <h2 class = "text-center">Пригласить друзей</h2>
+        {{ form_start(inviteForm) }}
+        <div class="form-check">
+            {{ form_row(inviteForm.checkbox, {'attr': {label: 'Email', 'class': 'form-control'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(inviteForm.save, {'attr': {label: 'Email', 'class': 'form-control'}}) }}
+        </div>
+        {{ form_end(inviteForm) }}
+    </div>
+{% endblock %}

@@ -94,4 +94,16 @@ class UserController extends AbstractController
             "user" => $user,
         ]);
     }
+
+    /**
+     * @Route("/user/index", name="user_index")
+     */
+    public function index(EntityManagerInterface $em){
+
+        $users = $em->getRepository(User::class)->findAll();
+
+        return $this->render('user/index.html.twig', [
+            "users" => $users,
+        ]);
+    }
 }

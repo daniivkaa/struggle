@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Competition;
+use App\Entity\Friend;
 use App\Entity\Game;
+use App\Entity\Notice;
 use App\Entity\Player;
 use App\Entity\PlayersGame;
 use App\Entity\Rating;
@@ -18,6 +20,7 @@ use App\Service\GameService;
 use App\Service\PlayerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Response;
@@ -52,7 +55,7 @@ class CompetitionController extends AbstractController
     /**
      * @Route("/competition/create", name="create_competition")
      */
-    public function createCompetition(Request $request): Response
+    public function createCompetition(Request $request, EntityManagerInterface $em): Response
     {
         $lider = $this->getUser();
         $competition = new Competition();
@@ -62,7 +65,16 @@ class CompetitionController extends AbstractController
         if ($competitionForm->isSubmitted() && $competitionForm->isValid()) {
             $this->competitionService->createCompetition($competition, $lider);
 
-            return $this->redirectToRoute('admin_competition', ['competition' => $competition->getId()]);
+            $notice = new Notice();
+                $notice->setType("admin_competition");
+                $notice->setTargetUser($lider);
+                $notice->setCompetition($competition);
+                $notice->setActive(true);
+
+            $em->persist($notice);
+            $em->flush();
+
+            return $this->redirectToRoute('admin_competition_game', ['competition' => $competition->getId()]);
         }
 
         return $this->render('competition/create.html.twig', [
@@ -169,6 +181,14 @@ class CompetitionController extends AbstractController
     {
         $this->competitionService->endCompetition($competition);
 
+        $notices = $em->getRepository(Notice::class)->findBy(["competition" => $competition]);
+        foreach($notices as $notice){
+            $notice->setActive(false);
+            $em->persist($notice);
+        }
+
+        $em->flush();
+
         return $this->redirectToRoute('admin_competition_game', ['competition' => $competition->getId()]);
     }
 
@@ -211,6 +231,108 @@ class CompetitionController extends AbstractController
             'addForm' => $addForm->createView(),
         ]);
     }
+
+    /**
+     * @Route("/competition/invite/users/{competition}", name="invite_users")
+     */
+    public function inviteUsers(Competition $competition, Request $request, EntityManagerInterface $em): Response
+    {
+        $user = $this->getUser();
+        $friends = $em->getRepository(Friend::class)->findBy(["targetUser" => $user]);
+
+        $formFriends = [];
+        foreach($friends as $friend){
+            $key = $friend->getSecondUser()->getId();
+            $name = $friend->getSecondUser()->getFirstName();
+            $lastName = $friend->getSecondUser()->getLastName();
+            $patronymic = $friend->getSecondUser()->getPatronymic();
+
+            $formFriends["$name $lastName $patronymic"] = $key;
+        }
+
+        $form = $this->createFormBuilder()
+            ->add("checkbox", ChoiceType::class, [
+                'choices' => $formFriends,
+                'expanded' => true,
+                'multiple'=> true
+            ])
+
+        ->add('save', SubmitType::class, ['label' => 'Пригласить'])
+        ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            foreach($data["checkbox"] as $userId){
+                $targetUser = $em->getRepository(User::class)->findOneBy(["id" => $userId]);
+
+                $isNotice = $em->getRepository(Notice::class)->findOneBy(["type" => "invite_competition", "targetUser" => $targetUser, "competition" => $competition]);
+
+                if($isNotice){
+                    continue;
+                }
+
+                $notice = new Notice();
+                    $notice->setType("invite_competition");
+                    $notice->setTargetUser($targetUser);
+                    $notice->setCompetition($competition);
+                    $notice->setActive(true);
+
+                $em->persist($notice);
+                $em->flush();
+            }
+
+            return $this->redirectToRoute('admin_competition_players', ['competition' => $competition->getId()]);
+        }
+
+        return $this->render('competition/lider/inviteUsers.html.twig', [
+            'competition' => $competition,
+            "inviteForm" => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/competition/connect/invite/{competition}", name="connect_competition_invite")
+     */
+    public function connectCompetitionToInvite(Competition $competition, EntityManagerInterface $em): Response
+    {
+        $user = $this->getUser();
+        $notice = $em->getRepository(Notice::class)->findOneBy(["type" => "invite_competition", "targetUser" => $user, "competition" => $competition, "active" => true]);
+
+        if($notice){
+            $notice->setActive(false);
+            $em->persist($notice);
+            $em->flush();
+
+            $player = $this->playerService->addPlayer($competition, $user);
+
+            return $this->redirectToRoute('player_competition', ['player' => $player->getId()]);
+        }
+
+        return $this->redirectToRoute('notice');
+    }
+
+    /**
+     * @Route("/competition/connect/public/{competition}", name="connect_competition_public")
+     */
+    public function connectCompetitionPublic(Competition $competition, EntityManagerInterface $em): Response
+    {
+        $user = $this->getUser();
+
+        $isPlayer = $em->getRepository(Player::class)->findOneBy(["competition" => $competition, "users" => $user]);
+
+        if($competition->getPublic() && !$isPlayer){
+
+            $player = $this->playerService->addPlayer($competition, $user);
+
+            return $this->redirectToRoute('player_competition', ['player' => $player->getId()]);
+        }
+
+        return $this->redirectToRoute('competition');
+    }
+
+
 
     /**
      * @Route("/competition/history/{competition}", name="history_competition")
