@@ -22,7 +22,7 @@ class TestCompetition extends Fixture
 
     public function load(ObjectManager $manager)
     {
-
+        /*
         $uer = new User();
             $uer->setEmail("daniivkaa@gmail.com");
             $uer->setFirstName("Daniil");
@@ -102,5 +102,6 @@ class TestCompetition extends Fixture
         }
 
         $manager->flush();
+        */
     }
 }

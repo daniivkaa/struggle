@@ -3,10 +3,22 @@
 {% block title %}Show Competition{% endblock %}
 
 {% block body %}
-    <h1>{{ competition.name }}</h1>
+    <h1>Соревнование: {{ competition.name }}</h1>
 
-    <h2>{{ player.firstName }}</h2>
+    <h2>Вы: {{ player.firstName }}</h2>
 
     <a href = "{{ path('user_show', {'secondUser': competition.lider.id}) }}">Написать руководителю</a>
+
+    {% for game in competition.games %}
+        {% if game.isActive == true %}
+        <div class="card w-75  text-center mt-3">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <p>Играет {{ game.firstPlayer.firstName }} против {{ game.secondPlayer.firstName  }}</p>
+                </h5>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
 
 {% endblock %}

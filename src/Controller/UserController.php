@@ -30,7 +30,7 @@ class UserController extends AbstractController
         if ($user !== $this->getUser()) {
             return $this->redirectToRoute('competition');
         }
-        $players = $em->getRepository(Player::class)->findBy(['users' => $user]);
+        $players = $em->getRepository(Player::class)->findBy(['users' => $user], ['id' => 'DESC']);
         foreach($players as $player){
             $competitionId = $player->getCompetition()->getId();
             $competition = $em->getRepository(Competition::class)->find($competitionId);

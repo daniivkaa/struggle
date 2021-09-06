@@ -46,7 +46,7 @@ class CompetitionController extends AbstractController
     public function index(EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
-        $competition = $em->getRepository(Competition::class)->findBy(['public' => true], ['id' => 'DESC']);
+        $competition = $em->getRepository(Competition::class)->findBy(['public' => true, "isActive" => true], ['id' => 'DESC']);
         return $this->render('competition/index.html.twig', [
             'competitions' => $competition,
         ]);
@@ -135,11 +135,11 @@ class CompetitionController extends AbstractController
         if ($addGameForm->isSubmitted() && $addGameForm->isValid()) {
 
             $data = $this->playerService->pickPlayer($competition);
+            if($data){
+                $data['competition'] = $competition;
 
-            $data['competition'] = $competition;
-
-
-            $this->gameService->createGame($data);
+                $this->gameService->createGame($data);
+            }
 
             return $this->redirectToRoute('admin_competition_game', ['competition' => $competition->getId()]);
         }
@@ -193,11 +193,13 @@ class CompetitionController extends AbstractController
     }
 
     /**
-     * @Route("/competition/player/{player}", name="player_competition")
+     * @Route("/competition/player/{competition}", name="player_competition")
      */
-    public function playerCompetition(Player $player): Response
+    public function playerCompetition(Competition $competition, EntityManagerInterface $em): Response
     {
-        $competition = $player->getCompetition();
+        $user = $this->getUser();
+
+        $player = $em->getRepository(Player::class)->findOneBy(["users" => $user, "competition" => $competition]);
 
         return $this->render('competition/player.html.twig', [
             'competition' => $competition,

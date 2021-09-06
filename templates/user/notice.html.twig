@@ -24,7 +24,7 @@
                 {% endif %}
                 {% if notice.type == "competition" %}
                     <p>Вы участвуете в соревновании: {{ notice.competition.name }}</p>
-                    <a href = "{{ path('show_competition', {competition: notice.competition.id})}}">Перейти</a>
+                    <a href = "{{ path('player_competition', {competition: notice.competition.id})}}">Перейти</a>
                 {% endif %}
             </div>
         </div>

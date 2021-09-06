@@ -58,8 +58,8 @@ class PlayerService
         $players = $this->playerRepository->findBy(['competition' => $competition, 'isActive' => false]);
         $countPlayer = count($this->playerRepository->findBy(['competition' => $competition]));
 
-        $firstPlayer = Player::class;
-        $secondPlayer = Player::class;
+        $firstPlayer = null;
+        $secondPlayer = null;
 
         foreach($players as $player){
             $idPlayer = $player->getId();
@@ -83,10 +83,14 @@ class PlayerService
             }
         }
 
-        $data = [
-            'firstPlayer' => $firstPlayer,
-            'secondPlayer' => $secondPlayer,
-        ];
+        $data = null;
+
+        if($firstPlayer && $secondPlayer){
+            $data = [
+                'firstPlayer' => $firstPlayer,
+                'secondPlayer' => $secondPlayer,
+            ];
+        }
 
         return $data;
     }
