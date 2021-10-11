@@ -225,7 +225,7 @@ class CompetitionController extends AbstractController
                 $user = $this->getUser();
                 $player = $this->playerService->addPlayer($competition, $user);
 
-                return $this->redirectToRoute('player_competition', ['player' => $player->getId()]);
+                return $this->redirectToRoute('player_competition', ['competition' => $competition->getId()]);
             }
         }
 
@@ -309,7 +309,7 @@ class CompetitionController extends AbstractController
 
             $player = $this->playerService->addPlayer($competition, $user);
 
-            return $this->redirectToRoute('player_competition', ['player' => $player->getId()]);
+            return $this->redirectToRoute('player_competition', ['competition' => $competition->getId()]);
         }
 
         return $this->redirectToRoute('notice');
@@ -328,7 +328,7 @@ class CompetitionController extends AbstractController
 
             $player = $this->playerService->addPlayer($competition, $user);
 
-            return $this->redirectToRoute('player_competition', ['player' => $player->getId()]);
+            return $this->redirectToRoute('player_competition', ['competition' => $competition->getId()]);
         }
 
         return $this->redirectToRoute('competition');
@@ -346,6 +346,18 @@ class CompetitionController extends AbstractController
         }
         return $this->render('competition/history.html.twig', [
             'competition' => $competition,
+        ]);
+    }
+
+    /**
+     * @Route("/competition/ended", name="show_ended_competition")
+     */
+    public function showEndedCompetition(EntityManagerInterface $em): Response
+    {
+        $competitions = $em->getRepository(Competition::class)->findBy(["isActive" => false, "public" => true]);
+
+        return $this->render('competition/ended.html.twig', [
+            'competitions' => $competitions,
         ]);
     }
 }

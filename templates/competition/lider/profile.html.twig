@@ -13,6 +13,7 @@
                 <p class="card-text">День проведения: {{ competition.day | date("m.d.Y") }}</p>
                 <p class="card-text">Время проведения: {{ competition.time | date('H:i') }}</p>
                 <p class="card-text">Код: {{ competition.code}}</p>
+                <a class="btn btn-primary" href="{{ path('upload_show_image', {competition:competition.id}) }}">Загрузить фотографии</a>
             </div>
         </div>
 {% endblock %}

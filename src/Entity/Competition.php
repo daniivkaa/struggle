@@ -89,11 +89,17 @@ class Competition
      */
     private $lider;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Image::class, mappedBy="competition")
+     */
+    private $images;
+
     public function __construct()
     {
         $this->players = new ArrayCollection();
         $this->games = new ArrayCollection();
         $this->ratings = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -319,6 +325,36 @@ class Competition
     public function setLider(?User $lider): self
     {
         $this->lider = $lider;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Image[]
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Image $image): self
+    {
+        if (!$this->images->contains($image)) {
+            $this->images[] = $image;
+            $image->setCompetition($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Image $image): self
+    {
+        if ($this->images->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getCompetition() === $this) {
+                $image->setCompetition(null);
+            }
+        }
 
         return $this;
     }

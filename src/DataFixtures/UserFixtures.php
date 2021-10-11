@@ -18,25 +18,54 @@ class UserFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $users = [
+        $usersInfo = [
             [
-                "mail" => "daniivkaa@gmail.com",
-
+                "email" => "daniivkaa@gmail.com",
+                "name" => "Даниил",
+                "lastName" => "Кононов",
+                "patronymic" => "Александрович",
+                "password" => "123456"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                "email" => "test1@gmail.com",
+                "name" => "Ваня1",
+                "lastName" => "Муражкин",
+                "patronymic" => "Иванович",
+                "password" => "123456"
+            ],
+            [
+                "email" => "test2@gmail.com",
+                "name" => "Саша2",
+                "lastName" => "Колмогоров",
+                "patronymic" => "Одисеевич",
+                "password" => "123456"
+            ],
+            [
+                "email" => "test3@gmail.com",
+                "name" => "Вадим3",
+                "lastName" => "Несмеянов",
+                "patronymic" => "Егорович",
+                "password" => "123456"
+            ],
+            [
+                "email" => "test4@gmail.com",
+                "name" => "Оля4",
+                "lastName" => "Кузницова",
+                "patronymic" => "Кировна",
+                "password" => "123456"
+            ],
         ];
 
-        $uer = new User();
-            $uer->setEmail("daniivkaa@gmail.com");
-            $uer->setFirstName("Даниил");
-            $uer->setLastName("Кононов");
-            $uer->setPatronymic("Александрович");
-            $password = $this->hash->hashPassword($uer, "123456");
-            $uer->setPassword($password);
-        $manager->persist($uer);
+        foreach($usersInfo as $userInfo){
+            $user = new User();
+                $user->setEmail($userInfo["email"]);
+                $user->setFirstName($userInfo["name"]);
+                $user->setLastName($userInfo["lastName"]);
+                $user->setPatronymic($userInfo["patronymic"]);
+                $password = $this->hash->hashPassword($user, $userInfo["password"]);
+                $user->setPassword($password);
+            $manager->persist($user);
+        }
 
         $manager->flush();
     }

@@ -5,6 +5,7 @@
 {% block section %}
     <h2>Игры</h2>
     <a href="{{ path('user_history', {user:app.user.id}) }}" class="btn btn-primary">Вернуться</a>
+    <a href="{{ path('user_show_images', {competition:competition.id}) }}" class="btn btn-primary">Постотреть фото</a>
     {% for game in games %}
         <div class="card w-75  text-center mt-3">
             <div class="card-body">

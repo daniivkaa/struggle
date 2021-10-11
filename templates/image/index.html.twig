@@ -1,0 +1,24 @@
+{% extends 'competition/lider/base_lider.html.twig' %}
+
+{% block title %}Загрузка фото{% endblock %}
+
+{% block section %}
+    <h2>Добавить фото</h2>
+    {{ form_start(addImage) }}
+        {{ form_widget(addImage) }}
+        {{ form_rest(addImage) }}
+    {{ form_end(addImage) }}
+    <h2>Ваши фото</h2>
+    <div class = "container">
+        <div class="row">
+                {% for image in images %}
+                <div class="card mb-2 mx-2" style="width: 18rem;">
+                    <img src="{{ asset("uploads/post/") }}{{ image.originName }}" class="card-img-top" alt="Картинка">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ image.fileName }}</h5>
+                    </div>
+                </div>
+                {% endfor %}
+        </div>
+    </div>
+{% endblock %}

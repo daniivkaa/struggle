@@ -58,6 +58,7 @@ class UserController extends AbstractController
 
         return $this->render('user/game_history.html.twig', [
             'games' => $games,
+            'competition' => $competition
         ]);
     }
 
