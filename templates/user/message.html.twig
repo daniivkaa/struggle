@@ -4,12 +4,21 @@
 
 {% block section %}
     <h1>Переписка с <a href = "{{ path("user_show", {secondUser:secondUser.id}) }}">{{ secondUser.firstName }}</a></h1>
-    {% for comment in message.comments %}
-        <p>{{ comment.content }} написал: {{ comment.targetUser.firstName }}</p>
-    {% endfor %}
-
+    <div id = "messages_ajax">
+        {% for comment in message.comments %}
+            <p>{{ comment.targetUser.firstName }} написал: {{ comment.content }}</p>
+        {% endfor %}
+    </div>
     {{ form_start(commentForm) }}
     {{ form_widget(commentForm) }}
     <button type="submit" class="btn btn-primary">Отправить</button>
     {{ form_end(commentForm) }}
+    <input type="hidden" id="targetUserId" value="{{ targetUser.id }}" />
+    <input type="hidden" id="secondUserId" value="{{ secondUser.id }}" />
+    <input type="hidden" id="messageId" value="{{ message.id }}" />
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('messagesAjax') }}
 {% endblock %}

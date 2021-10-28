@@ -12,39 +12,24 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Game[]    findAll()
  * @method Game[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class GameRepository extends ServiceEntityRepository
+class GameRepository extends ServiceEntityRepository implements GameRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Game::class);
     }
 
-    // /**
-    //  * @return Game[] Returns an array of Game objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function getGamesForAjax(int $competitionId): array
     {
         return $this->createQueryBuilder('g')
-            ->andWhere('g.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('g.id', 'ASC')
-            ->setMaxResults(10)
+            ->select('f.firstName as firstPlayer', 's.firstName  as secondPlayer')
+            ->innerJoin("g.firstPlayer", "f")
+            ->innerJoin("g.secondPlayer", "s")
+            ->andWhere('g.competition = :competitionId')
+            ->setParameter('competitionId', $competitionId)
+            ->andWhere('g.isActive = true')
             ->getQuery()
             ->getResult()
-        ;
+            ;
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Game
-    {
-        return $this->createQueryBuilder('g')
-            ->andWhere('g.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

@@ -8,17 +8,23 @@
     <h2>Вы: {{ player.firstName }}</h2>
 
     <a href = "{{ path('user_show', {'secondUser': competition.lider.id}) }}">Написать руководителю</a>
-
-    {% for game in competition.games %}
-        {% if game.isActive == true %}
-        <div class="card w-75  text-center mt-3">
-            <div class="card-body">
-                <h5 class="card-title">
-                    <p>Играет {{ game.firstPlayer.firstName }} против {{ game.secondPlayer.firstName  }}</p>
-                </h5>
+    <div id = "buildHtml">
+        {% for game in competition.games %}
+            {% if game.isActive == true %}
+            <div class="card w-75  text-center mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <p>Играет {{ game.firstPlayer.firstName }} против {{ game.secondPlayer.firstName  }}</p>
+                    </h5>
+                </div>
             </div>
-        </div>
-        {% endif %}
-    {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </div>
+    <input type="hidden" id="competitionId" value="{{ competition.id }}" />
+{% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('competitionAjax') }}
 {% endblock %}

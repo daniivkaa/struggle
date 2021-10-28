@@ -12,39 +12,30 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Comment[]    findAll()
  * @method Comment[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CommentRepository extends ServiceEntityRepository
+class CommentRepository extends ServiceEntityRepository implements CommentRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Comment::class);
     }
 
-    // /**
-    //  * @return Comment[] Returns an array of Comment objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function getCommentsForAjax(int $targetUserId, int $secondUserId, int $messageId): array
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
+            ->select("c.content", "t.firstName")
+            ->innerJoin("c.targetUser", "t")
+            ->andWhere("c.targetUser = :targetUserId AND c.secondUser = :secondUserId")
+            ->setParameter("targetUserId", $targetUserId)
+            ->setParameter("secondUserId", $secondUserId)
+            ->orWhere("c.targetUser = :secondUserId")
+            ->setParameter("secondUserId", $secondUserId)
+            ->orWhere("c.secondUser = :targetUser")
+            ->setParameter("targetUser", $secondUserId)
+            ->andWhere("c.message = :messageId")
+            ->setParameter("messageId", $messageId)
+            ->orderBy("c.id", "ASC")
             ->getQuery()
             ->getResult()
-        ;
+            ;
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Comment
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
