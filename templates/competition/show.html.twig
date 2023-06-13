@@ -8,6 +8,8 @@
     <h1>{{ competition.description }}</h1>
 
     {% for rating in ratings %}
-        <p> Место: {{ rating.place }} Игрок: {{ rating.player.firstName }}</p>
+        {% if  rating.place %}
+            <p> Место: {{ rating.place }} Игрок: {{ rating.player.firstName }}</p>
+        {% endif %}
     {% endfor %}
 {% endblock %}

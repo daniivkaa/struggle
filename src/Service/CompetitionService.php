@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Competition;
 use App\Entity\User;
+use App\Repository\GameRepositoryInterface;
 use App\Repository\RatingRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -11,12 +12,13 @@ class CompetitionService
 {
     private $em;
     private $ratingRepository;
+    private $gameRepository;
 
-    public function __construct(EntityManagerInterface $em, RatingRepository $ratingRepository)
+    public function __construct(EntityManagerInterface $em, RatingRepository $ratingRepository, GameRepositoryInterface $gameRepository)
     {
         $this->em = $em;
         $this->ratingRepository = $ratingRepository;
-
+        $this->gameRepository = $gameRepository;
     }
 
     public function endCompetition(Competition $competition):void
@@ -25,7 +27,16 @@ class CompetitionService
         $i = 1;
 
         foreach($ratings as $rating) {
-            $rating->setPlace($i);
+            $place = $i;
+            if ("olimp" == $competition->getType()) {
+                $place = null;
+                $lastGame = $this->gameRepository->findOneBy(['competition' => $competition], ['id' => 'DESC']);
+
+                if ($rating->getPlayer()->getId() == $lastGame->getWiner()->getId()) {
+                    $place = 1;
+                }
+            }
+            $rating->setPlace($place);
             $this->em->persist($rating);
             $i++;
         }

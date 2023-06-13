@@ -135,6 +135,7 @@ class CompetitionController extends AbstractController
         if ($addGameForm->isSubmitted() && $addGameForm->isValid()) {
 
             $data = $this->playerService->pickPlayer($competition);
+
             if($data){
                 $data['competition'] = $competition;
 
@@ -359,5 +360,13 @@ class CompetitionController extends AbstractController
         return $this->render('competition/ended.html.twig', [
             'competitions' => $competitions,
         ]);
+    }
+
+    /**
+     * @Route("/", name="redirect_to_home")
+     */
+    public function redirectToHome(): Response
+    {
+        return $this->redirectToRoute('competition');
     }
 }

@@ -12,7 +12,11 @@
                         {{ competition['competition'].name }}
                     </a>
                 </h5>
-                <p class="card-text">Вы заняли {{ competition['rating'].place }} место и победили {{ competition['rating'].countWin }} раз</p>
+                {% if  competition['rating'].place %}
+                    <p class="card-text">Вы заняли {{ competition['rating'].place }} место и победили {{ competition['rating'].countWin }} раз</p>
+                {% else %}
+                    <p class="card-text">Вы проиграли</p>
+                {% endif %}
                 <a href="{{ path('user_history_games', {competition:competition['competition'].id}) }}" class="btn btn-primary">Подробнее</a>
             </div>
         </div>
